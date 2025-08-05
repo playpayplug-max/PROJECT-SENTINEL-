@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Sentinel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Roboto+Slab:wght@700&display=swap" rel="stylesheet">
+    <style>
+        /* --- Design System & Variables --- */
+        :root {
+            --color-bg-primary: #FFFFFF;
+            --color-bg-secondary: #F4F6F8;
+            --color-text-primary: #212529;
+            --color-text-secondary: #6C757D;
+            --color-accent-primary: #005A9E;
+            --color-accent-secondary: #6C757D;
+            --color-border: #DEE2E6;
+            --spacing-unit: 8px;
+            --font-heading: 'Roboto Slab', serif;
+            --font-body: 'Inter', sans-serif;
+        }
+
+        /* --- Global Styles & Resets --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: var(--font-body); background-color: var(--color-bg-secondary); color: var(--color-text-primary); line-height: 1.6; }
+
+        /* --- Layout & View Management --- */
+        .view { display: block; }
+        .view.hidden { display: none; }
+
+        .main-header {
+            background-color: var(--color-bg-primary);
+            padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 4);
+            border-bottom: 1px solid var(--color-border);
+            text-align: center;
+            position: relative;
+        }
+        .main-header h1 { font-family: var(--font-heading); color: var(--color-accent-primary); font-size: 28px; }
+
+        .form-container, .dashboard-container {
+            max-width: 1200px;
+            margin: calc(var(--spacing-unit) * 4) auto;
+            padding: 0 calc(var(--spacing-unit) * 4);
+        }
+        .form-content-wrapper {
+            max-width: 900px; margin: 0 auto; padding: calc(var(--spacing-unit) * 4);
+            background-color: var(--color-bg-primary); border-radius: var(--spacing-unit);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        /* --- Form Styling --- */
+        form { display: flex; flex-direction: column; gap: calc(var(--spacing-unit) * 4); }
+        fieldset { border: 1px solid var(--color-border); border-radius: calc(var(--spacing-unit) / 2); padding: calc(var(--spacing-unit) * 3); }
+        legend { font-family: var(--font-heading); font-size: 20px; font-weight: 700; padding: 0 var(--spacing-unit); margin-left: var(--spacing-unit); color: var(--color-text-primary); }
+        .form-group { margin-bottom: calc(var(--spacing-unit) * 2); }
+        .form-group:last-child { margin-bottom: 0; }
+        .form-row { display: flex; gap: calc(var(--spacing-unit) * 2); }
+        .form-row .form-group { flex: 1; }
+        label { display: block; font-weight: 500; margin-bottom: var(--spacing-unit); color: var(--color-text-secondary); }
+        input[type="text"], input[type="number"], input[type="date"], select, textarea {
+            width: 100%; padding: var(--spacing-unit) calc(var(--spacing-unit) * 1.5);
+            border: 1px solid var(--color-border); border-radius: 4px; font-family: var(--font-body);
+            font-size: 16px; transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--color-accent-primary); box-shadow: 0 0 0 3px rgba(0, 90, 158, 0.2); }
+        textarea { resize: vertical; }
+
+        /* Checkbox Styling */
+        .checkbox-group-label { font-weight: 500; color: var(--color-text-secondary); margin-bottom: calc(var(--spacing-unit) * 1.5); }
+        .checkbox-item { display: flex; align-items: center; margin-bottom: var(--spacing-unit); }
+        .checkbox-item input[type="checkbox"] { width: auto; margin-right: calc(var(--spacing-unit) * 1.5); height: 18px; width: 18px; }
+        .checkbox-item label { margin-bottom: 0; font-weight: 400; color: var(--color-text-primary); }
+
+        /* --- Button Controls --- */
+        .form-controls { display: flex; justify-content: flex-end; gap: calc(var(--spacing-unit) * 2); padding-top: calc(var(--spacing-unit) * 2); border-top: 1px solid var(--color-border); }
+        .btn { padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 3); font-family: var(--font-body); font-size: 16px; font-weight: 700; border: none; border-radius: 4px; cursor: pointer; transition: background-color 0.2s; }
+        .btn-primary { background-color: var(--color-accent-primary); color: var(--color-bg-primary); }
+        .btn-primary:hover { background-color: #00437A; }
+        .btn-secondary { background-color: var(--color-accent-secondary); color: var(--color-bg-primary); }
+        .btn-secondary:hover { background-color: #5A6268; }
+        .header-action-btn { position: absolute; right: calc(var(--spacing-unit) * 4); top: 50%; transform: translateY(-50%); }
+
+        /* --- Dashboard Specific Layout --- */
+        .summary-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: calc(var(--spacing-unit) * 3); margin-bottom: calc(var(--spacing-unit) * 4); }
+        .summary-widget { background-color: var(--color-bg-primary); padding: calc(var(--spacing-unit) * 3); border-radius: var(--spacing-unit); border: 1px solid var(--color-border); text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.03); }
+        .widget-value { display: block; font-family: var(--font-heading); font-size: 36px; font-weight: 700; color: var(--color-accent-primary); }
+        .widget-label { font-size: 14px; font-weight: 500; color: var(--color-text-secondary); }
+
+        .controls-bar { display: flex; justify-content: flex-end; gap: calc(var(--spacing-unit) * 3); padding: calc(var(--spacing-unit) * 2); background-color: var(--color-bg-primary); border-radius: var(--spacing-unit); border: 1px solid var(--color-border); margin-bottom: calc(var(--spacing-unit) * 4); }
+        .control-group { display: flex; align-items: center; gap: var(--spacing-unit); }
+        .control-group label { font-weight: 500; margin-bottom: 0; }
+        .control-group select { padding: var(--spacing-unit); }
+
+        /* Case List Area & Case Card Styling */
+        .case-list-area { display: flex; flex-direction: column; gap: calc(var(--spacing-unit) * 2); }
+        .case-card { display: flex; justify-content: space-between; align-items: stretch; background-color: var(--color-bg-primary); border: 1px solid var(--color-border); border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.03); padding: calc(var(--spacing-unit) * 2); border-left-width: 6px; }
+        .card-main { flex-grow: 1; }
+        .card-title { font-family: var(--font-heading); font-size: 18px; margin-bottom: var(--spacing-unit); }
+        .card-detail { font-size: 14px; color: var(--color-text-secondary); margin: 0; }
+        .card-detail strong { color: var(--color-text-primary); }
+        .card-aside { display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; margin-left: var(--spacing-unit); }
+        .risk-badge { font-family: var(--font-body); font-weight: 700; font-size: 20px; color: #fff; padding: calc(var(--spacing-unit) * 0.5) calc(var(--spacing-unit) * 1.5); border-radius: 4px; min-width: 40px; text-align: center; }
+        .card-date { font-size: 12px; color: var(--color-text-secondary); }
+        .no-cases-message { text-align: center; padding: calc(var(--spacing-unit) * 5); background: var(--color-bg-primary); border-radius: var(--spacing-unit); color: var(--color-text-secondary); font-style: italic; }
+
+        /* Risk Color Mapping */
+        .risk-critical { --risk-color: #D32F2F; } /* Red */
+        .risk-high    { --risk-color: #F57C00; } /* Orange */
+        .risk-medium  { --risk-color: #FBC02D; } /* Yellow */
+        .risk-low     { --risk-color: #1976D2; } /* Blue */
+        .case-card.risk-critical, .case-card.risk-high, .case-card.risk-medium, .case-card.risk-low { border-left-color: var(--risk-color); }
+        .case-card .risk-badge { background-color: var(--risk-color); }
+    </style>
+</head>
+<body>
+
+    <!-- VIEW 1: Dashboard (Default View) -->
+    <div id="dashboardView" class="view">
+        <header class="main-header">
+            <h1>Project Sentinel | AER Dashboard</h1>
+            <button id="showFormBtn" class="btn btn-primary header-action-btn">Enter New Case</button>
+        </header>
+        <main class="dashboard-container">
+            <section class="summary-bar">
+                <div class="summary-widget"><span class="widget-value" id="totalCases">0</span><span class="widget-label">Total Cases</span></div>
+                <div class="summary-widget"><span class="widget-value" id="criticalAlerts">0</span><span class="widget-label">Critical Alerts</span></div>
+                <div class="summary-widget"><span class="widget-value" id="highPriority">0</span><span class="widget-label">High Priority</span></div>
+                <div class="summary-widget"><span class="widget-value" id="mediumPriority">0</span><span class="widget-label">Medium Priority</span></div>
+            </section>
+            <section class="controls-bar">
+                <div class="control-group"><label for="sortBy">Sort By:</label><select id="sortBy"><option value="risk-desc">Risk Score (High to Low)</option><option value="date-desc">Report Date (Newest First)</option></select></div>
+            </section>
+            <section class="case-list-area" id="caseList"></section>
+        </main>
+    </div>
+
+    <!-- VIEW 2: ICSR Form (Initially Hidden) -->
+    <div id="formView" class="view hidden">
+        <header class="main-header"><h1>Project Sentinel | Enter New Adverse Event Report</h1></header>
+        <main class="form-container">
+            <div class="form-content-wrapper">
+                <form id="aerForm">
+                    <fieldset><legend>1. Patient Information</legend>
+                        <div class="form-group"><label for="patientId">Patient Identifier</label><input type="text" id="patientId" name="patientId" required></div>
+                        <div class="form-row">
+                            <div class="form-group"><label for="age">Age at Time of Event</label><input type="number" id="age" name="age" min="0" required></div>
+                            <div class="form-group"><label for="sex">Sex</label><select id="sex" name="sex" required><option value="" disabled selected>Select...</option><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option></select></div>
+                        </div>
+                        <div class="form-group"><label for="medicalHistory">Relevant Medical History</label><textarea id="medicalHistory" name="medicalHistory" rows="3"></textarea></div>
+                    </fieldset>
+                    <fieldset><legend>2. Suspect Product</legend>
+                        <div class="form-group"><label for="productName">Product Name</label><input type="text" id="productName" name="productName" required></div>
+                        <div class="form-group"><label for="indication">Indication for Use</label><input type="text" id="indication" name="indication" required></div>
+                        <div class="form-group"><label for="dosage">Dosage and Route</label><input type="text" id="dosage" name="dosage"></div>
+                        <div class="form-row">
+                            <div class="form-group"><label for="startDate">Start Date</label><input type="date" id="startDate" name="startDate" required></div>
+                            <div class="form-group"><label for="endDate">End Date</label><input type="date" id="endDate" name="endDate"></div>
+                        </div>
+                    </fieldset>
+                    <fieldset><legend>3. Adverse Event Details</legend>
+                        <div class="form-group"><label for="onsetDate">Event Onset Date</label><input type="date" id="onsetDate" name="onsetDate" required></div>
+                        <div class="form-group"><label for="description">Description of Reaction</label><textarea id="description" name="description" rows="4" required></textarea></div>
+                        <div class="form-row">
+                            <div class="form-group"><label for="actionTaken">Action Taken with Drug</label><select id="actionTaken" name="actionTaken" required><option value="" disabled selected>Select...</option><option value="Drug Withdrawn">Drug Withdrawn</option><option value="Dose Reduced">Dose Reduced</option><option value="No Change">No Change</option><option value="Unknown">Unknown</option></select></div>
+                            <div class="form-group"><label for="outcome">Outcome of Reaction</label><select id="outcome" name="outcome" required><option value="" disabled selected>Select...</option><option value="Recovered">Recovered</option><option value="Not Recovered">Not Recovered</option><option value="Recovering">Recovering</option><option value="Fatal">Fatal</option><option value="Unknown">Unknown</option></select></div>
+                        </div>
+                    </fieldset>
+                    <fieldset><legend>4. Seriousness & Novelty</legend>
+                        <div class="form-group"><label class="checkbox-group-label">Regulatory Seriousness Criteria (Check all that apply)</label>
+                            <div class="checkbox-group">
+                                <div class="checkbox-item"><input type="checkbox" id="isDeath" name="isDeath"><label for="isDeath">Results in Death</label></div>
+                                <div class="checkbox-item"><input type="checkbox" id="isLifeThreatening" name="isLifeThreatening"><label for="isLifeThreatening">Is Life-Threatening</label></div>
+                                <div class="checkbox-item"><input type="checkbox" id="requiresHospitalization" name="requiresHospitalization"><label for="requiresHospitalization">Requires Inpatient Hospitalization</label></div>
+                                <div class="checkbox-item"><input type="checkbox" id="isDisabling" name="isDisabling"><label for="isDisabling">Results in Persistent/Significant Disability</label></div>
+                                <div class="checkbox-item"><input type="checkbox" id="isCongenitalAnomaly" name="isCongenitalAnomaly"><label for="isCongenitalAnomaly">Is a Congenital Anomaly</label></div>
+                                <div class="checkbox-item"><input type="checkbox" id="isMedicallyImportant" name="isMedicallyImportant"><label for="isMedicallyImportant">Is a Medically Important Event</label></div>
+                            </div>
+                        </div>
+                        <div class="form-group"><label class="checkbox-group-label">Event Novelty</label><div class="checkbox-item"><input type="checkbox" id="isUnexpected" name="isUnexpected"><label for="isUnexpected">Event is NOT listed in product's reference safety information (Unexpected)</label></div></div>
+                    </fieldset>
+                    <fieldset><legend>5. Reporter Information</legend>
+                        <div class="form-row">
+                            <div class="form-group"><label for="sourceType">Source of Report</label><select id="sourceType" name="sourceType" required><option value="" disabled selected>Select...</option><option value="Physician">Physician</option><option value="Pharmacist">Pharmacist</option><option value="Other HCP">Other HCP</option><option value="Patient">Patient</option></select></div>
+                            <div class="form-group"><label for="reportDate">Date of Report</label><input type="date" id="reportDate" name="reportDate" required></div>
+                        </div>
+                    </fieldset>
+                    <div class="form-controls">
+                        <button type="submit" class="btn btn-primary">Submit Case</button>
+                        <button type="button" id="cancelBtn" class="btn btn-secondary">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        /**
+         * Dr. Eva Rostova's Risk Scoring Algorithm
+         * Calculates a risk score for an AER case based on a set of clinical rules.
+         * @param {object} caseObject - An object representing the AER case.
+         * @returns {number} The calculated total risk score.
+         */
+        function calculateRiskScore(caseObject) {
+            let totalScore = 0;
+            if (caseObject.seriousnessCriteria.isDeath) { totalScore += 50; }
+            else if (caseObject.seriousnessCriteria.isLifeThreatening) { totalScore += 40; }
+            else if (caseObject.seriousnessCriteria.requiresHospitalization) { totalScore += 20; }
+            else if (caseObject.seriousnessCriteria.isDisabling) { totalScore += 20; }
+            else if (caseObject.seriousnessCriteria.isCongenitalAnomaly) { totalScore += 20; }
+            else if (caseObject.seriousnessCriteria.isMedicallyImportant) { totalScore += 15; }
+            switch (caseObject.eventInfo.outcome) {
+                case "Fatal": totalScore += 15; break;
+                case "Not Recovered": totalScore += 10; break;
+                case "Recovering": totalScore += 5; break;
+            }
+            if (caseObject.reporterInfo.sourceType === "Physician" || caseObject.reporterInfo.sourceType === "Pharmacist") { totalScore += 10; }
+            const isRecovering = caseObject.eventInfo.outcome === "Recovered" || caseObject.eventInfo.outcome === "Recovering";
+            if (caseObject.eventInfo.actionTaken === "Drug Withdrawn" && isRecovering) { totalScore += 15; }
+            else if (caseObject.eventInfo.actionTaken === "Dose Reduced" && isRecovering) { totalScore += 10; }
+            if (caseObject.eventInfo.isUnexpected) { totalScore += 20; }
+            return totalScore;
+        }
+
+        /**
+         * Dev Patel's Main Application & Integration Logic
+         */
+        document.addEventListener('DOMContentLoaded', () => {
+            // View containers
+            const dashboardView = document.getElementById('dashboardView');
+            const formView = document.getElementById('formView');
+            // Interactive elements
+            const showFormBtn = document.getElementById('showFormBtn');
+            const cancelBtn = document.getElementById('cancelBtn');
+            const form = document.getElementById('aerForm');
+            const caseListArea = document.getElementById('caseList');
+            const sortByControl = document.getElementById('sortBy');
+
+            // --- VIEW MANAGEMENT ---
+            function showView(viewId) {
+                dashboardView.classList.add('hidden');
+                formView.classList.add('hidden');
+                document.getElementById(viewId).classList.remove('hidden');
+            }
+
+            showFormBtn.addEventListener('click', () => showView('formView'));
+            cancelBtn.addEventListener('click', () => showView('dashboardView'));
+            sortByControl.addEventListener('change', renderDashboard);
+
+            // --- FORM SUBMISSION LOGIC ---
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const formData = new FormData(form);
+                const caseObject = {
+                    id: `CASE-${Date.now()}`,
+                    patientInfo: { patientId: formData.get('patientId'), age: parseInt(formData.get('age'), 10), sex: formData.get('sex'), medicalHistory: formData.get('medicalHistory'), },
+                    productInfo: { productName: formData.get('productName'), indication: formData.get('indication'), dosage: formData.get('dosage'), startDate: formData.get('startDate'), endDate: formData.get('endDate'), },
+                    eventInfo: { onsetDate: formData.get('onsetDate'), description: formData.get('description'), meddraTerms: [formData.get('description').split(' ')[0] || 'N/A'], isUnexpected: formData.has('isUnexpected'), actionTaken: formData.get('actionTaken'), outcome: formData.get('outcome'), },
+                    seriousnessCriteria: { isDeath: formData.has('isDeath'), isLifeThreatening: formData.has('isLifeThreatening'), requiresHospitalization: formData.has('requiresHospitalization'), isDisabling: formData.has('isDisabling'), isCongenitalAnomaly: formData.has('isCongenitalAnomaly'), isMedicallyImportant: formData.has('isMedicallyImportant'), },
+                    reporterInfo: { sourceType: formData.get('sourceType'), reportDate: formData.get('reportDate'), }
+                };
+                const riskScore = calculateRiskScore(caseObject);
+                caseObject.riskScore = riskScore;
+                saveCase(caseObject);
+                form.reset(); // Bug fix by Sam Jones
+                renderDashboard();
+                showView('dashboardView');
+            });
+
+            // --- DATA & RENDERING LOGIC ---
+            function getCases() { return JSON.parse(localStorage.getItem('aerCases_v2')) || []; }
+            function saveCase(newCase) {
+                const cases = getCases();
+                cases.push(newCase);
+                localStorage.setItem('aerCases_v2', JSON.stringify(cases));
+            }
+            function getRiskCategory(score) {
+                if (score > 70) return 'critical'; if (score >= 40) return 'high'; if (score >= 20) return 'medium'; return 'low';
+            }
+            function renderDashboard() {
+                const cases = getCases();
+                const sortBy = sortByControl.value;
+
+                // Sort data based on control
+                cases.sort((a, b) => {
+                    if (sortBy === 'risk-desc') { return b.riskScore - a.riskScore; }
+                    if (sortBy === 'date-desc') { return new Date(b.reporterInfo.reportDate) - new Date(a.reporterInfo.reportDate); }
+                });
+
+                caseListArea.innerHTML = '';
+                const summary = { total: cases.length, critical: 0, high: 0, medium: 0 };
+                if (cases.length === 0) {
+                    caseListArea.innerHTML = `<p class="no-cases-message">No cases have been submitted. Click "Enter New Case" to begin.</p>`;
+                }
+                cases.forEach(caseData => {
+                    const riskCategory = getRiskCategory(caseData.riskScore);
+                    if (riskCategory === 'critical') summary.critical++;
+                    if (riskCategory === 'high') summary.high++;
+                    if (riskCategory === 'medium') summary.medium++;
+                    caseListArea.insertAdjacentHTML('beforeend', `
+                        <div class="case-card risk-${riskCategory}">
+                            <div class="card-main">
+                                <h3 class="card-title">Patient ID: ${caseData.patientInfo.patientId}</h3>
+                                <p class="card-detail"><strong>Product:</strong> ${caseData.productInfo.productName}</p>
+                                <p class="card-detail"><strong>Event:</strong> ${caseData.eventInfo.description}</p>
+                            </div>
+                            <div class="card-aside">
+                                <div class="risk-badge">${caseData.riskScore}</div>
+                                <span class="card-date">${caseData.reporterInfo.reportDate}</span>
+                            </div>
+                        </div>`);
+                });
+                document.getElementById('totalCases').textContent = summary.total;
+                document.getElementById('criticalAlerts').textContent = summary.critical;
+                document.getElementById('highPriority').textContent = summary.high;
+                document.getElementById('mediumPriority').textContent = summary.medium;
+            }
+            // Initial render on page load
+            renderDashboard();
+        });
+    </script>
+</body>
+</html>
